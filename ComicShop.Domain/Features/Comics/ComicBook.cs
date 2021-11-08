@@ -1,7 +1,7 @@
-﻿using ComicShop.Domain.Publishers;
-using System;
+﻿using System;
+using ComicShop.Domain.Features.Publishers;
 
-namespace ComicShop.Domain.Comics
+namespace ComicShop.Domain.Features.Comics
 {
     public class ComicBook : Entity
     {

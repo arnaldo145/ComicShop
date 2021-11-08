@@ -1,4 +1,4 @@
-﻿using ComicShop.Domain.Comics;
+﻿using ComicShop.Domain.Features.Comics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

@@ -1,9 +1,9 @@
-﻿using ComicShop.Domain.Comics;
-using ComicShop.Domain.Publishers;
+﻿using System.Linq;
+using ComicShop.Domain.Features.Comics;
+using ComicShop.Domain.Features.Publishers;
 using ComicShop.Infra.Data.Features.Comics;
 using ComicShop.Infra.Data.Features.Publishers;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace ComicShop.Infra.Data.Contexts
 {

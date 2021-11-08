@@ -1,8 +1,7 @@
-﻿using ComicShop.Domain.Comics;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using ComicShop.Domain.Features.Comics;
 
-namespace ComicShop.Domain.Publishers
+namespace ComicShop.Domain.Features.Publishers
 {
     public class Publisher : Entity
     {

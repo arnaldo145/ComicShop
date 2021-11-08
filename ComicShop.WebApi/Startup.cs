@@ -1,4 +1,10 @@
+﻿using System;
+using System.IO;
+using System.Reflection;
+using ComicShop.Application;
 using ComicShop.Infra.Data.Contexts;
+using ComicShop.WebApi.Extensions;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -6,9 +12,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using System;
-using System.IO;
-using System.Reflection;
 
 namespace ComicShop.WebApi
 {
@@ -24,10 +27,13 @@ namespace ComicShop.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers()
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AppModule>());
 
             services.AddDbContext<ComicShopCommonDbContext>(options =>
                    options.UseSqlServer(Configuration.GetConnectionString("ComicShopContext")));
+
+            services.AddDependencies();
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
