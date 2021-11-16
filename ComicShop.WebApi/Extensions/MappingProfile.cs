@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using ComicShop.Application.Features.Publishers;
+using ComicShop.Domain.Features.Publishers;
 
 namespace ComicShop.WebApi.Extensions
 {
@@ -6,6 +8,7 @@ namespace ComicShop.WebApi.Extensions
     {
         public MappingProfile()
         {
+            CreateMap<PublisherCreate.Command, Publisher>();
         }
     }
 }
