@@ -1,7 +1,9 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ComicShop.Domain.Features.Publishers;
 using ComicShop.Infra.Data.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace ComicShop.Infra.Data.Features.Publishers
 {
@@ -21,6 +23,11 @@ namespace ComicShop.Infra.Data.Features.Publishers
             await _context.SaveChangesAsync();
 
             return publisher.Id;
+        }
+
+        public async Task<IEnumerable<Publisher>> GetAllAsync()
+        {
+            return await Task.Run(() => _context.Publishers.ToListAsync());
         }
     }
 }
