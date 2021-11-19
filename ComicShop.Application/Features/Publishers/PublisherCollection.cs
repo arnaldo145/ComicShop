@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using ComicShop.Domain.Features.Publishers;
 using MediatR;
@@ -7,9 +8,9 @@ namespace ComicShop.Application.Features.Publishers
 {
     public class PublisherCollection
     {
-        public class Query : IRequest<Task<IEnumerable<Publisher>>> { }
+        public class Query : IRequest<IEnumerable<Publisher>> { }
 
-        public class Handler : RequestHandler<Query, Task<IEnumerable<Publisher>>>
+        public class Handler : IRequestHandler<Query, IEnumerable<Publisher>>
         {
             private readonly IPublisherRepository _publisherRepository;
 
@@ -18,12 +19,7 @@ namespace ComicShop.Application.Features.Publishers
                 _publisherRepository = publisherRepository;
             }
 
-            public Handler()
-            {
-
-            }
-
-            protected override async Task<IEnumerable<Publisher>> Handle(Query request)
+            public async Task<IEnumerable<Publisher>> Handle(Query request, CancellationToken cancellationToken)
             {
                 return await _publisherRepository.GetAllAsync();
             }

@@ -34,7 +34,7 @@ namespace ComicShop.WebApi.Controllers.v1.Publishers
         {
             var response = await _mediator.Send(new PublisherCollection.Query());
 
-            var publisherViewModelList = _mapper.Map<IEnumerable<PublisherResumeViewModel>>(response.Result);
+            var publisherViewModelList = _mapper.Map<IEnumerable<PublisherResumeViewModel>>(response);
 
             return Ok(publisherViewModelList);
         }
