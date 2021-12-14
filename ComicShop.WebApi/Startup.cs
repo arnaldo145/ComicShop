@@ -5,6 +5,7 @@ using ComicShop.Application;
 using ComicShop.Infra.Data.Contexts;
 using ComicShop.WebApi.Extensions;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -28,7 +29,10 @@ namespace ComicShop.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
+                .AddNewtonsoftJson()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AppModule>());
+
+            services.AddOData();
 
             services.AddDbContext<ComicShopCommonDbContext>(options =>
                    options.UseSqlServer(Configuration.GetConnectionString("ComicShopContext")));
@@ -85,6 +89,8 @@ namespace ComicShop.WebApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.EnableDependencyInjection();
+                endpoints.Select().Filter().OrderBy().Count().MaxTop(100);
             });
 
             UpdateDatabase(app);

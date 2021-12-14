@@ -4,6 +4,7 @@ using AutoMapper;
 using ComicShop.Application.Features.Publishers;
 using ComicShop.WebApi.Controllers.v1.Publishers.ViewModels;
 using MediatR;
+using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComicShop.WebApi.Controllers.v1.Publishers
@@ -30,6 +31,7 @@ namespace ComicShop.WebApi.Controllers.v1.Publishers
         }
 
         [HttpGet]
+        [EnableQuery]
         public async Task<IActionResult> GetAllAsync()
         {
             var response = await _mediator.Send(new PublisherCollection.Query());
