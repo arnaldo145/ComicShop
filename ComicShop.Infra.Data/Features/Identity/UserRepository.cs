@@ -19,7 +19,7 @@ namespace ComicShop.Infra.Data.Features.Identity
 
         public User GetByEmail(string email)
         {
-            return Users.Where(x => x.Email.ToLower() == email.ToLower())
+            return Users.Where(x => x.Email.ToLower().Equals(email.ToLower()))
                 .SingleOrDefault();
         }
     }

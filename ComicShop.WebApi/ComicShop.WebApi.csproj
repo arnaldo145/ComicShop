@@ -10,8 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="10.1.1" />
-    <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.4" />
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.6" />
     <PackageReference Include="MediatR" Version="9.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
@@ -31,10 +31,12 @@
     <ProjectReference Include="..\ComicShop.Application\ComicShop.Application.csproj" />
     <ProjectReference Include="..\ComicShop.Domain\ComicShop.Domain.csproj" />
     <ProjectReference Include="..\ComicShop.Infra.Data\ComicShop.Infra.Data.csproj" />
+    <ProjectReference Include="..\ComicShop.Infra\ComicShop.Infra.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Controllers\v1\Comics\ViewModels\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
 
 

@@ -5,22 +5,21 @@ using System.Text;
 using ComicShop.Domain.Features.Identity;
 using Microsoft.IdentityModel.Tokens;
 
-namespace ComicShop.WebApi.Helpers
+namespace ComicShop.Application.Features.Identity.Services
 {
-    public static class JwtAuth
+    public class AuthService : IAuthService
     {
-        public static string GenerateToken(User user)
+        public string GenerateToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 
-            //chave secreta, geralmente se coloca em arquivo de configuração
             var key = Encoding.ASCII.GetBytes("ZWRpw6fDo28gZW0gY29tcHV0YWRvcmE=");
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Name.ToString()),
+                    new Claim(ClaimTypes.Name, user.Name),
                     new Claim(ClaimTypes.Role, RoleFactory(user.Type))
                 }),
                 Expires = DateTime.UtcNow.AddHours(10),
@@ -33,8 +32,7 @@ namespace ComicShop.WebApi.Helpers
             return tokenHandler.WriteToken(token);
         }
 
-
-        private static string RoleFactory(int roleNumber)
+        private string RoleFactory(int roleNumber)
         {
             switch (roleNumber)
             {

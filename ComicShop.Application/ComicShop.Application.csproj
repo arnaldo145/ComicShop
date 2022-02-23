@@ -8,6 +8,8 @@
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="FluentValidation" Version="10.3.4" />
     <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.16.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.16.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ComicShop.Domain\ComicShop.Domain.csproj" />
+    <ProjectReference Include="..\ComicShop.Infra\ComicShop.Infra.csproj" />
   </ItemGroup>
 
 </Project>
