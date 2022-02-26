@@ -2,10 +2,10 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using ComicShop.Domain.Features.Identity;
+using ComicShop.Domain.Features.Users;
 using Microsoft.IdentityModel.Tokens;
 
-namespace ComicShop.Application.Features.Identity.Services
+namespace ComicShop.Application.Features.Users.Services
 {
     public class AuthService : IAuthService
     {

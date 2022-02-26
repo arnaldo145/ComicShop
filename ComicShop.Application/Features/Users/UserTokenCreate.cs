@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using ComicShop.Application.Features.Identity.DTOs;
-using ComicShop.Application.Features.Identity.Services;
-using ComicShop.Domain.Features.Identity;
+using ComicShop.Application.Features.Users.DTOs;
+using ComicShop.Application.Features.Users.Services;
+using ComicShop.Domain.Features.Users;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 
-namespace ComicShop.Application.Features.Identity
+namespace ComicShop.Application.Features.Users
 {
-    public class TokenCreate
+    public class UserTokenCreate
     {
         public class Command : IRequest<UserTokenDTO>
         {
@@ -27,7 +27,7 @@ namespace ComicShop.Application.Features.Identity
                 public Validator()
                 {
                     RuleFor(s => s.Email).NotNull().NotEmpty().MaximumLength(255);
-                    RuleFor(s => s.Password).NotNull().NotEmpty().MaximumLength(30);
+                    RuleFor(s => s.Password).NotNull().NotEmpty().MaximumLength(50);
                 }
             }
         }
@@ -44,9 +44,9 @@ namespace ComicShop.Application.Features.Identity
                 _authService = authService;
             }
 
-            public Task<UserTokenDTO> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<UserTokenDTO> Handle(Command request, CancellationToken cancellationToken)
             {
-                var user = _userRepository.GetByEmail(request.Email);
+                var user = await _userRepository.GetByEmailAsync(request.Email);
 
                 if (user == null)
                     throw new Exception("User not found");
@@ -56,7 +56,7 @@ namespace ComicShop.Application.Features.Identity
 
                 var tokenGenerated = _authService.GenerateToken(user);
 
-                return Task.Run(() => new UserTokenDTO(tokenGenerated, user.Name));
+                return new UserTokenDTO(tokenGenerated, user.Name);
             }
         }
     }

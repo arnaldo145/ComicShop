@@ -1,4 +1,4 @@
-﻿namespace ComicShop.Application.Features.Identity.DTOs
+﻿namespace ComicShop.Application.Features.Users.DTOs
 {
     public class UserTokenDTO
     {

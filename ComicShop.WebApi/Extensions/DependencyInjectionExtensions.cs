@@ -1,10 +1,10 @@
 ﻿using System.Reflection;
 using AutoMapper;
 using ComicShop.Application;
-using ComicShop.Application.Features.Identity.Services;
-using ComicShop.Domain.Features.Identity;
+using ComicShop.Application.Features.Users.Services;
+using ComicShop.Domain.Features.Users;
 using ComicShop.Domain.Features.Publishers;
-using ComicShop.Infra.Data.Features.Identity;
+using ComicShop.Infra.Data.Features.Users;
 using ComicShop.Infra.Data.Features.Publishers;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;

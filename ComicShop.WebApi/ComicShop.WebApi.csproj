@@ -36,7 +36,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers\v1\Comics\ViewModels\" />
-    <Folder Include="Helpers\" />
   </ItemGroup>
 
 

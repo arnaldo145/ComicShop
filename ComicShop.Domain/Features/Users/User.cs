@@ -1,6 +1,6 @@
-﻿namespace ComicShop.Domain.Features.Identity
+﻿namespace ComicShop.Domain.Features.Users
 {
-    public class User
+    public class User : Entity
     {
         public int Type { get; set; }
         public string Name { get; set; }
