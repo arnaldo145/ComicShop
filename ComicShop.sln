@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31112.23
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1 - Distribuition", "1 - Distribuition", "{0777BEBB-FA29-4D48-AA29-A19F2F99FC11}"
 EndProject
@@ -19,12 +19,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComicShop.Infra.Data", "Com
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComicShop.WebApi", "ComicShop.WebApi\ComicShop.WebApi.csproj", "{1D4D9ADC-2423-403B-86CB-2384693B41CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComicShop.Application", "ComicShop.Application\ComicShop.Application.csproj", "{34C3F5D8-F705-43C2-A05A-3F86DDC314C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComicShop.Application", "ComicShop.Application\ComicShop.Application.csproj", "{34C3F5D8-F705-43C2-A05A-3F86DDC314C0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CF813858-1E36-4DA8-B35A-1F15871179EB}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComicShop.Infra", "ComicShop.Infra\ComicShop.Infra.csproj", "{26D63448-24CA-4D15-8793-1D1D90BD2CA6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,6 +50,10 @@ Global
 		{34C3F5D8-F705-43C2-A05A-3F86DDC314C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34C3F5D8-F705-43C2-A05A-3F86DDC314C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34C3F5D8-F705-43C2-A05A-3F86DDC314C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26D63448-24CA-4D15-8793-1D1D90BD2CA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26D63448-24CA-4D15-8793-1D1D90BD2CA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26D63448-24CA-4D15-8793-1D1D90BD2CA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26D63448-24CA-4D15-8793-1D1D90BD2CA6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,6 +63,7 @@ Global
 		{5381E9E1-E7D4-4305-B4D1-5C241F40BE09} = {B886DADD-62B2-44D6-803C-78B6FC6DA84D}
 		{1D4D9ADC-2423-403B-86CB-2384693B41CF} = {0777BEBB-FA29-4D48-AA29-A19F2F99FC11}
 		{34C3F5D8-F705-43C2-A05A-3F86DDC314C0} = {84206F84-13E5-4D8B-BB94-25F80436285D}
+		{26D63448-24CA-4D15-8793-1D1D90BD2CA6} = {B886DADD-62B2-44D6-803C-78B6FC6DA84D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4548CA35-20BD-4D83-8FFD-49C94AAA146B}

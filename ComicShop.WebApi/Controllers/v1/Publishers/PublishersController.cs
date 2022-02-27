@@ -4,6 +4,7 @@ using AutoMapper;
 using ComicShop.Application.Features.Publishers;
 using ComicShop.WebApi.Controllers.v1.Publishers.ViewModels;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComicShop.WebApi.Controllers.v1.Publishers
@@ -22,6 +23,7 @@ namespace ComicShop.WebApi.Controllers.v1.Publishers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Default,Admin")]
         public async Task<IActionResult> PostAsync([FromBody] PublisherCreate.Command publisherCreateCommand)
         {
             var response = await _mediator.Send(publisherCreateCommand);
@@ -30,6 +32,7 @@ namespace ComicShop.WebApi.Controllers.v1.Publishers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Default,Admin")]
         public async Task<IActionResult> GetAllAsync()
         {
             var response = await _mediator.Send(new PublisherCollection.Query());
@@ -38,6 +41,5 @@ namespace ComicShop.WebApi.Controllers.v1.Publishers
 
             return Ok(publisherViewModelList);
         }
-
     }
 }

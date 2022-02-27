@@ -1,16 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using ComicShop.Application;
 using ComicShop.Infra.Data.Contexts;
 using ComicShop.WebApi.Extensions;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace ComicShop.WebApi
@@ -35,26 +39,33 @@ namespace ComicShop.WebApi
 
             services.AddDependencies();
 
-            // Register the Swagger generator, defining 1 or more Swagger documents
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Version = "v1",
-                    Title = "ComicShop WebApi",
-                    Description = "API destinada para gerenciar uma loja de quadrinhos",
-                    Contact = new OpenApiContact
-                    {
-                        Name = "Arnaldo Madeira",
-                        Email = "arnaldomadeira145@gmail.com"
-                    }
-                });
+            #region JWT Config
 
-                // Set the comments path for the Swagger JSON and UI.
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
+            //aqui vai nossa key secreta, o recomendado é guarda - la no arquivo de configuração
+            var secretKey = "ZWRpw6fDo28gZW0gY29tcHV0YWRvcmE=";
+
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
             });
+
+            #endregion
+
+
+            services.ConfigureSwaggerServices();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -76,9 +87,13 @@ namespace ComicShop.WebApi
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "ComicShop Web API");
             });
 
+            app.UseErrorHandler();
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

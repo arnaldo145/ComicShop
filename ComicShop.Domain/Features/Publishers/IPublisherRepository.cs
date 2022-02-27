@@ -6,7 +6,7 @@ namespace ComicShop.Domain.Features.Publishers
 {
     public interface IPublisherRepository
     {
-        Task<Guid> Add(Publisher publisher);
+        Task<Guid> AddAsync(Publisher publisher);
         Task<IEnumerable<Publisher>> GetAllAsync();
     }
 }

@@ -16,7 +16,7 @@ namespace ComicShop.Infra.Data.Features.Publishers
             _context = context;
         }
 
-        public async Task<Guid> Add(Publisher publisher)
+        public async Task<Guid> AddAsync(Publisher publisher)
         {
             publisher = _context.Publishers.Add(publisher).Entity;
 

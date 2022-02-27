@@ -1,8 +1,10 @@
 ﻿using System.Linq;
 using ComicShop.Domain.Features.Comics;
 using ComicShop.Domain.Features.Publishers;
+using ComicShop.Domain.Features.Users;
 using ComicShop.Infra.Data.Features.Comics;
 using ComicShop.Infra.Data.Features.Publishers;
+using ComicShop.Infra.Data.Features.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace ComicShop.Infra.Data.Contexts
@@ -11,6 +13,7 @@ namespace ComicShop.Infra.Data.Contexts
     {
         public DbSet<Publisher> Publishers { get; set; }
         public DbSet<ComicBook> ComicBooks { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public ComicShopCommonDbContext(DbContextOptions<ComicShopCommonDbContext> options) : base(options)
         {
@@ -21,6 +24,7 @@ namespace ComicShop.Infra.Data.Contexts
         {
             modelBuilder.ApplyConfiguration(new PublisherEntityConfiguration());
             modelBuilder.ApplyConfiguration(new ComicBookEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new UserEntityConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }
