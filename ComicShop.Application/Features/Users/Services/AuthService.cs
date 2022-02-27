@@ -39,6 +39,9 @@ namespace ComicShop.Application.Features.Users.Services
                 case 1:
                     return "Default";
 
+                case 2:
+                    return "Admin";
+
                 default:
                     throw new Exception();
             }

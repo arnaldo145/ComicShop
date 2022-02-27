@@ -24,5 +24,15 @@ namespace ComicShop.WebApi.Controllers.v1.Users
 
             return Ok(response);
         }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [Route("/v1/users")]
+        public async Task<IActionResult> CreateUserAsync([FromBody] UserCreate.Command command)
+        {
+            var response = await _mediator.Send(command);
+
+            return Ok(response);
+        }
     }
 }

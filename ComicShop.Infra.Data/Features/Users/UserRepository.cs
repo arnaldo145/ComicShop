@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using ComicShop.Domain.Features.Users;
@@ -13,6 +13,15 @@ namespace ComicShop.Infra.Data.Features.Users
         public UserRepository(ComicShopCommonDbContext context)
         {
             _context = context;
+        }
+
+        public async Task<Guid> AddAsync(User user)
+        {
+            user = _context.Users.Add(user).Entity;
+
+            await _context.SaveChangesAsync();
+
+            return user.Id;
         }
 
         public async Task<User> GetByEmailAsync(string email)

@@ -45,7 +45,7 @@ namespace ComicShop.Application.Features.Publishers
             {
                 var publisher = _mapper.Map<Publisher>(request);
 
-                var addCallback = await _publisherRepository.Add(publisher);
+                var addCallback = await _publisherRepository.AddAsync(publisher);
 
                 return addCallback;
             }

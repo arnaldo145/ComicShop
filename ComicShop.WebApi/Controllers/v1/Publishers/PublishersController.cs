@@ -23,6 +23,7 @@ namespace ComicShop.WebApi.Controllers.v1.Publishers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Default,Admin")]
         public async Task<IActionResult> PostAsync([FromBody] PublisherCreate.Command publisherCreateCommand)
         {
             var response = await _mediator.Send(publisherCreateCommand);
@@ -31,7 +32,7 @@ namespace ComicShop.WebApi.Controllers.v1.Publishers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Default,Admin")]
         public async Task<IActionResult> GetAllAsync()
         {
             var response = await _mediator.Send(new PublisherCollection.Query());
