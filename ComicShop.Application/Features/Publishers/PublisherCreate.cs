@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using ComicShop.Domain.Exceptions;
 using ComicShop.Domain.Features.Publishers;
 using FluentValidation;
 using FluentValidation.Results;
@@ -44,6 +45,13 @@ namespace ComicShop.Application.Features.Publishers
             public async Task<Guid> Handle(Command request, CancellationToken cancellationToken)
             {
                 var publisher = _mapper.Map<Publisher>(request);
+
+                var hasAnyCallback = _publisherRepository.HasAnyAsync(publisher.Name);
+
+                var hasAny = hasAnyCallback.Result;
+
+                if (hasAny)
+                    throw new BadRequestException("There is already a registered publisher with the same name.");
 
                 var addCallback = await _publisherRepository.AddAsync(publisher);
 
