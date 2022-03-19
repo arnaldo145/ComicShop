@@ -1,16 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using ComicShop.Application.Features.Publishers;
 using ComicShop.WebApi.Controllers.v1.Publishers.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComicShop.WebApi.Controllers.v1.Publishers
 {
     [Route("v1/[controller]")]
     [ApiController]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public class PublishersController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -24,15 +27,18 @@ namespace ComicShop.WebApi.Controllers.v1.Publishers
 
         [HttpPost]
         [Authorize(Roles = "Default,Admin")]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PostAsync([FromBody] PublisherCreate.Command publisherCreateCommand)
         {
             var response = await _mediator.Send(publisherCreateCommand);
 
-            return Ok(response);
+            return Created(string.Empty, response);
         }
 
         [HttpGet]
         [Authorize(Roles = "Default,Admin")]
+        [ProducesResponseType(typeof(IEnumerable<PublisherResumeViewModel>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllAsync()
         {
             var response = await _mediator.Send(new PublisherCollection.Query());
