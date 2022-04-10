@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using ComicShop.Domain.Features.Users;
@@ -11,7 +10,7 @@ namespace ComicShop.Application.Features.Users
 {
     public class UserCreate
     {
-        public class Command : IRequest<Guid>
+        public class Command : IRequest<User>
         {
             public int Type { get; set; }
             public string Name { get; set; }
@@ -35,7 +34,7 @@ namespace ComicShop.Application.Features.Users
             }
         }
 
-        public class Handler : IRequestHandler<Command, Guid>
+        public class Handler : IRequestHandler<Command, User>
         {
             private readonly IUserRepository _userRepository;
             private readonly IMapper _mapper;
@@ -47,11 +46,13 @@ namespace ComicShop.Application.Features.Users
                 _mapper = mapper;
             }
 
-            public async Task<Guid> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<User> Handle(Command request, CancellationToken cancellationToken)
             {
                 var user = _mapper.Map<User>(request);
 
-                var addCallback = await _userRepository.AddAsync(user);
+                var addCallback = _userRepository.Add(user);
+
+                await _userRepository.SaveChangesAsync();
 
                 return addCallback;
             }

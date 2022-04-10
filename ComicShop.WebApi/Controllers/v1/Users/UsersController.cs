@@ -32,7 +32,7 @@ namespace ComicShop.WebApi.Controllers.v1.Users
         {
             var response = await _mediator.Send(command);
 
-            return Ok(response);
+            return Ok(response.Id);
         }
     }
 }

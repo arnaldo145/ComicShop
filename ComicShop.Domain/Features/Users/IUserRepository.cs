@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace ComicShop.Domain.Features.Users
 {
@@ -7,6 +6,8 @@ namespace ComicShop.Domain.Features.Users
     {
         Task<User> GetByEmailAsync(string email);
 
-        Task<Guid> AddAsync(User user);
+        User Add(User user);
+
+        Task SaveChangesAsync();
     }
 }
