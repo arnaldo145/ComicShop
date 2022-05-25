@@ -9,5 +9,6 @@ namespace ComicShop.Domain.Features.Publishers
         Task<Guid> AddAsync(Publisher publisher);
         Task<IEnumerable<Publisher>> GetAllAsync();
         Task<bool> HasAnyAsync(string publisherName);
+        Task<bool> HasAnyByIdAsync(Guid publisherId);
     }
 }

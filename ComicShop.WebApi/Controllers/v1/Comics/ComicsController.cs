@@ -1,11 +1,36 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Threading.Tasks;
+using AutoMapper;
+using ComicShop.Application.Features.Comics;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ComicShop.WebApi.Controllers.v1.Comics
 {
     [Route("v1/[controller]")]
     [ApiController]
-    public class ComicsController
+    public class ComicsController : ControllerBase
     {
+        private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
+        public ComicsController(IMediator mediator, IMapper mapper)
+        {
+            _mediator = mediator;
+            _mapper = mapper;
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Default,Admin")]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> PostAsync([FromBody] ComicBookCreate.Command comicBookCreateCommand)
+        {
+            var response = await _mediator.Send(comicBookCreateCommand);
+
+            return Created(string.Empty, response);
+        }
     }
 }
