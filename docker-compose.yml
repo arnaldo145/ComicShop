@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+    comic-shop-api:
+        container_name: comic-shop-api
+        build: .
+        ports:
+            - "8080:80"
+        depends_on:
+            - mssql
+        environment:
+          ConnectionStrings__ComicShopContext: "Data Source=host.docker.internal,1433;Initial Catalog=ComicShop;User ID=sa;Password=P@ssw0rd"
+    mssql:
+        image: "mcr.microsoft.com/mssql/server:2019-latest"
+        container_name: mssql-server
+        environment:
+            SA_PASSWORD: "P@ssw0rd"
+            ACCEPT_EULA: "Y"
+        ports:
+            - "1433:1433"
