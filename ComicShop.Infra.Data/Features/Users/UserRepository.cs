@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using ComicShop.Domain.Features.Users;
 using ComicShop.Infra.Data.Contexts;
@@ -15,18 +14,19 @@ namespace ComicShop.Infra.Data.Features.Users
             _context = context;
         }
 
-        public async Task<Guid> AddAsync(User user)
+        public User Add(User user)
         {
-            user = _context.Users.Add(user).Entity;
-
-            await _context.SaveChangesAsync();
-
-            return user.Id;
+            return _context.Users.Add(user).Entity;
         }
 
         public async Task<User> GetByEmailAsync(string email)
         {
             return await Task.Run(() => _context.Users.SingleOrDefault(x => x.Email.Equals(email)));
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }
