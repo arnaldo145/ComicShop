@@ -1,8 +1,8 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using ComicShop.Application.Features.Users.DTOs;
 using ComicShop.Application.Features.Users.Services;
+using ComicShop.Domain.Exceptions;
 using ComicShop.Domain.Features.Users;
 using FluentValidation;
 using FluentValidation.Results;
@@ -49,10 +49,10 @@ namespace ComicShop.Application.Features.Users
                 var user = await _userRepository.GetByEmailAsync(request.Email);
 
                 if (user == null)
-                    throw new Exception("User not found");
+                    throw new NotFoundException("User not found");
 
                 if (!user.Password.Equals(request.Password))
-                    throw new Exception("Password not match");
+                    throw new BadRequestException("Password not match");
 
                 var tokenGenerated = _authService.GenerateToken(user);
 
