@@ -8,6 +8,8 @@ using ComicShop.Infra.Data.Features.Users;
 using ComicShop.Infra.Data.Features.Publishers;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using ComicShop.Domain.Features.Comics;
+using ComicShop.Infra.Data.Features.Comics;
 
 namespace ComicShop.WebApi.Extensions
 {
@@ -19,6 +21,7 @@ namespace ComicShop.WebApi.Extensions
             AddAutoMapper(services);
 
             AddPublisherFeature(services);
+            AddComicBookFeature(services);
             AddAuthFeature(services);
         }
 
@@ -41,6 +44,11 @@ namespace ComicShop.WebApi.Extensions
         private static void AddPublisherFeature(this IServiceCollection services)
         {
             services.AddScoped<IPublisherRepository, PublisherRepository>();
+        }
+
+        private static void AddComicBookFeature(this IServiceCollection services)
+        {
+            services.AddScoped<IComicBookRepository, ComicBookRepository>();
         }
 
         private static void AddAuthFeature(this IServiceCollection services)

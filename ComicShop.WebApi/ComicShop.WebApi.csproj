@@ -34,9 +34,5 @@
     <ProjectReference Include="..\ComicShop.Infra\ComicShop.Infra.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\v1\Comics\ViewModels\" />
-  </ItemGroup>
-
 
 </Project>
