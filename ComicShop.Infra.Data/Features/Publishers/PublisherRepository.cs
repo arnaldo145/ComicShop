@@ -34,5 +34,10 @@ namespace ComicShop.Infra.Data.Features.Publishers
         {
             return await Task.Run(() => _context.Publishers.AnyAsync(p => p.Name.ToLower() == publisherName.ToLower()));
         }
+
+        public async Task<bool> HasAnyByIdAsync(Guid publisherId)
+        {
+            return await Task.Run(() => _context.Publishers.AnyAsync(p => p.Id == publisherId));
+        }
     }
 }
