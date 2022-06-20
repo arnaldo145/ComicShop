@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using ComicShop.Application.Features.Comics;
+using ComicShop.WebApi.Controllers.v1.Comics.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -31,6 +33,18 @@ namespace ComicShop.WebApi.Controllers.v1.Comics
             var response = await _mediator.Send(comicBookCreateCommand);
 
             return Created(string.Empty, response);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Default,Admin")]
+        [ProducesResponseType(typeof(IEnumerable<ComicBookResumeViewModel>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAsync()
+        {
+            var response = await _mediator.Send(new ComicBookCollection.Query());
+
+            var comicBookViewModelList = _mapper.Map<IEnumerable<ComicBookResumeViewModel>>(response);
+
+            return Ok(comicBookViewModelList);
         }
     }
 }

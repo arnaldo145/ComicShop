@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ComicShop.Domain.Features.Comics
@@ -7,5 +8,6 @@ namespace ComicShop.Domain.Features.Comics
     {
         Task<Guid> AddAsync(ComicBook comicBook);
         Task<bool> HasAnyAsync(string comicBookName, Guid publisherId);
+        Task<IEnumerable<ComicBook>> GetAllAsNoTrackingAsync();
     }
 }

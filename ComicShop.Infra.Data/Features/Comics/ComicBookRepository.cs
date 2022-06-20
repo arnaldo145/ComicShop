@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ComicShop.Domain.Features.Comics;
 using ComicShop.Infra.Data.Contexts;
@@ -27,6 +28,14 @@ namespace ComicShop.Infra.Data.Features.Comics
         public async Task<bool> HasAnyAsync(string comicBookName, Guid publisherId)
         {
             return await Task.Run(() => _context.ComicBooks.AnyAsync(c => c.Name.ToLower() == comicBookName.ToLower() && c.PublisherId == publisherId));
+        }
+
+        public async Task<IEnumerable<ComicBook>> GetAllAsNoTrackingAsync()
+        {
+            return await Task.Run(() => _context.ComicBooks
+            .Include(c => c.Publisher)
+            .AsNoTracking()
+            .ToListAsync());
         }
     }
 }
