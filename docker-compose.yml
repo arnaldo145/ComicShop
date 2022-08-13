@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+    mssql:
+        image: "mcr.microsoft.com/mssql/server:2019-latest"
+        container_name: mssql-server
+        environment:
+            SA_PASSWORD: "P@ssw0rd"
+            ACCEPT_EULA: "Y"
+        ports:
+            - "1433:1433"
+    
+    portainer:
+        image: portainer/portainer-ce:latest
+        container_name: portainer
+        restart: "on-failure:5"
+        ports:
+        - "9000:9000"
+        volumes:
+        - portainer_data:/data
+        - /var/run/docker.sock:/var/run/docker.sock
+
+    comic-shop-api:
+        container_name: comic-shop-api
+        build: .
+        ports:
+            - "8080:80"
+        depends_on:
+            - mssql
+        environment:
+          ConnectionStrings__ComicShopContext: "Data Source=host.docker.internal,1433;Initial Catalog=ComicShop;User ID=sa;Password=P@ssw0rd"
+
+volumes:
+  portainer_data:
