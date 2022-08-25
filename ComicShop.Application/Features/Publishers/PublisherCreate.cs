@@ -7,6 +7,7 @@ using ComicShop.Domain.Features.Publishers;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace ComicShop.Application.Features.Publishers
 {
@@ -34,11 +35,15 @@ namespace ComicShop.Application.Features.Publishers
         public class Handler : IRequestHandler<Command, Guid>
         {
             private readonly IPublisherRepository _publisherRepository;
+            private readonly ILogger<Handler> _logger;
             private readonly IMapper _mapper;
 
-            public Handler(IPublisherRepository publisherRepository, IMapper mapper)
+            public Handler(IPublisherRepository publisherRepository,
+                ILogger<Handler> logger,
+                IMapper mapper)
             {
                 _publisherRepository = publisherRepository;
+                _logger = logger;
                 _mapper = mapper;
             }
 
@@ -51,7 +56,11 @@ namespace ComicShop.Application.Features.Publishers
                 var hasAny = hasAnyCallback.Result;
 
                 if (hasAny)
-                    throw new BadRequestException("There is already a registered publisher with the same name.");
+                {
+                    var badRequestException = new BadRequestException("There is already a registered publisher with the same name.");
+                    _logger.LogError(badRequestException, "There is already a registered publisher with the same name {publisherName}.", publisher.Name);
+                    throw badRequestException;
+                }
 
                 var addCallback = await _publisherRepository.AddAsync(publisher);
 

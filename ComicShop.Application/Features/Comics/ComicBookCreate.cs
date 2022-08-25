@@ -8,6 +8,7 @@ using ComicShop.Domain.Features.Publishers;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace ComicShop.Application.Features.Comics
 {
@@ -41,12 +42,17 @@ namespace ComicShop.Application.Features.Comics
         {
             private readonly IComicBookRepository _comicBookRepository;
             private readonly IPublisherRepository _publisherRepository;
+            private readonly ILogger<Handler> _logger;
             private readonly IMapper _mapper;
 
-            public Handler(IComicBookRepository comicBookRepository, IPublisherRepository publisherRepository, IMapper mapper)
+            public Handler(IComicBookRepository comicBookRepository,
+                IPublisherRepository publisherRepository,
+                ILogger<Handler> logger,
+                IMapper mapper)
             {
                 _comicBookRepository = comicBookRepository;
                 _publisherRepository = publisherRepository;
+                _logger = logger;
                 _mapper = mapper;
             }
 
@@ -57,16 +63,23 @@ namespace ComicShop.Application.Features.Comics
                 var hasAnyPublisher = await _publisherRepository.HasAnyByIdAsync(comicBook.PublisherId);
 
                 if (!hasAnyPublisher)
-                    throw new BadRequestException($"Unable to find publisher with id {comicBook.PublisherId}.");
+                {
+
+                    var badRequestException = new BadRequestException($"Unable to find publisher with id {comicBook.PublisherId}.");
+                    _logger.LogError(badRequestException, "Unable to find publisher with id {comicBookPublisherId}", comicBook.PublisherId);
+                    throw badRequestException;
+                }
 
                 var hasAnyComicBook = await _comicBookRepository.HasAnyAsync(comicBook.Name, comicBook.PublisherId);
 
                 if (hasAnyComicBook)
-                    throw new BadRequestException("Already exists comic book with same name and same publisher.");
+                {
+                    var badRequestException = new BadRequestException("Already exists comic book with same name and same publisher.");
+                    _logger.LogError(badRequestException, "Already exists comic book with same name ({comicBookName}) and same publisher ({publisherName}).", comicBook.Name, comicBook.Publisher.Name);
+                    throw badRequestException;
+                }
 
-                var addCallback = await _comicBookRepository.AddAsync(comicBook);
-
-                return addCallback;
+                return await _comicBookRepository.AddAsync(comicBook);
             }
         }
     }
