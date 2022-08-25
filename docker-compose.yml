@@ -1,6 +1,24 @@
 version: "3.9"
 
 services:
+    elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.11.1
+        container_name: elastic-search
+        ports:
+            - "9200:9200"
+            - "9300:9300"
+        environment:
+            discovery.type: single-node
+            ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+
+    kibana:
+        image: docker.elastic.co/kibana/kibana:7.11.1
+        container_name: kibana
+        ports:
+            - "5601:5601"
+        depends_on:
+        - elasticsearch
+
     mssql:
         image: "mcr.microsoft.com/mssql/server:2019-latest"
         container_name: mssql-server
@@ -27,8 +45,10 @@ services:
             - "8080:80"
         depends_on:
             - mssql
+            - elasticsearch
         environment:
           ConnectionStrings__ComicShopContext: "Data Source=host.docker.internal,1433;Initial Catalog=ComicShop;User ID=sa;Password=P@ssw0rd"
+          ElasticSearch__Uri: "http://host.docker.internal:9200"
 
 volumes:
   portainer_data:
