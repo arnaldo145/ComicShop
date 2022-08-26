@@ -28,5 +28,4 @@ COPY ComicShop.WebApi/docker-entrypoint.sh /usr/local/bin/
 
 COPY --from=publish /app/publish .
 
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["dotnet", "ComicShop.WebApi.dll"]
