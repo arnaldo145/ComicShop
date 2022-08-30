@@ -24,8 +24,6 @@ ENV BaseUrl=BaseUrl
 
 WORKDIR /app
 
-COPY ComicShop.WebApi/docker-entrypoint.sh /usr/local/bin/
-
 COPY --from=publish /app/publish .
 
 CMD ["dotnet", "ComicShop.WebApi.dll"]
