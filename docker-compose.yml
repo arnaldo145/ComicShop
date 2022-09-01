@@ -42,6 +42,8 @@ services:
         container_name: postgres
         image: postgres
         restart: unless-stopped
+        ports:
+            - "5432:5432"
         environment:
             - POSTGRES_USER=sonarqube
             - POSTGRES_PASSWORD=sonarpass
@@ -64,13 +66,14 @@ services:
         container_name: portainer
         restart: "on-failure:5"
         ports:
-            - "9002:9000"
+            - "4242:9000"
         volumes:
             - portainer_data:/data
             - /var/run/docker.sock:/var/run/docker.sock
 
     comic-shop-api:
         container_name: comic-shop-api
+        restart: "on-failure:5"
         build: .
         ports:
             - "8080:80"
