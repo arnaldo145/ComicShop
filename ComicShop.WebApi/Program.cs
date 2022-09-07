@@ -13,18 +13,18 @@ namespace ComicShop.WebApi
             try
             {
                 var hostBuilder = CreateHostBuilder(args).Build();
-                Serilog.Log.Information("Starting Web Host");
+                Log.Information("Starting Web Host");
                 hostBuilder.Run();
                 return 0;
             }
             catch (Exception ex)
             {
-                Serilog.Log.Fatal(ex, "Host finished unexpectedly");
+                Log.Fatal(ex, "Host finished unexpectedly");
                 return 1;
             }
             finally
             {
-                Serilog.Log.CloseAndFlush();
+                Log.CloseAndFlush();
             }
         }
 
@@ -33,7 +33,7 @@ namespace ComicShop.WebApi
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
                     var settings = config.Build();
-                    Serilog.Log.Logger = new LoggerConfiguration()
+                    Log.Logger = new LoggerConfiguration()
                         .Enrich.FromLogContext()
                         .WriteTo.Elasticsearch(
                             options:
