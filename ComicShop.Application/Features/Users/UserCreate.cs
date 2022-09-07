@@ -5,6 +5,7 @@ using ComicShop.Domain.Features.Users;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace ComicShop.Application.Features.Users
 {
@@ -37,12 +38,15 @@ namespace ComicShop.Application.Features.Users
         public class Handler : IRequestHandler<Command, User>
         {
             private readonly IUserRepository _userRepository;
+            private readonly ILogger<Handler> _logger;
             private readonly IMapper _mapper;
 
             public Handler(IUserRepository userRepository,
+                ILogger<Handler> logger,
                 IMapper mapper)
             {
                 _userRepository = userRepository;
+                _logger = logger;
                 _mapper = mapper;
             }
 
@@ -53,6 +57,8 @@ namespace ComicShop.Application.Features.Users
                 var addCallback = _userRepository.Add(user);
 
                 await _userRepository.SaveChangesAsync();
+
+                _logger.LogInformation("User {userName} created successfully.", user.Name);
 
                 return addCallback;
             }

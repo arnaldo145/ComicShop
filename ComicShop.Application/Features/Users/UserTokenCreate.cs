@@ -7,6 +7,7 @@ using ComicShop.Domain.Features.Users;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace ComicShop.Application.Features.Users
 {
@@ -36,12 +37,15 @@ namespace ComicShop.Application.Features.Users
         {
             private readonly IUserRepository _userRepository;
             private readonly IAuthService _authService;
+            private readonly ILogger<Handler> _logger;
 
             public Handler(IUserRepository userRepository,
-                IAuthService authService)
+                IAuthService authService,
+                ILogger<Handler> logger)
             {
                 _userRepository = userRepository;
                 _authService = authService;
+                _logger = logger;
             }
 
             public async Task<UserTokenDTO> Handle(Command request, CancellationToken cancellationToken)
@@ -49,12 +53,22 @@ namespace ComicShop.Application.Features.Users
                 var user = await _userRepository.GetByEmailAsync(request.Email);
 
                 if (user == null)
-                    throw new NotFoundException("User not found");
+                {
+                    var notFoundException = new NotFoundException("User not found");
+                    _logger.LogError(notFoundException, "User {userEmail} not found", request.Email);
+                    throw notFoundException;
+                }
 
                 if (!user.Password.Equals(request.Password))
-                    throw new BadRequestException("Password not match");
+                {
+                    var badRequestException = new BadRequestException("Password not match");
+                    _logger.LogError(badRequestException, "Password for user {userEmail} not match.", request.Email);
+                    throw badRequestException;
+                }
 
                 var tokenGenerated = _authService.GenerateToken(user);
+
+                _logger.LogInformation("Token for user {userEmail} generated successfully.", request.Email);
 
                 return new UserTokenDTO(tokenGenerated, user.Name);
             }
