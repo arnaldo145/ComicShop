@@ -15,7 +15,7 @@ services:
         restart: "on-failure:5"
         build: 
             context: ./
-            dockerfile: ComicShop.WebApi/Dockerfile
+            dockerfile: ./Dockerfile
         ports:
             - "8080:80"
         depends_on:
