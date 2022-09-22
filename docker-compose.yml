@@ -23,3 +23,5 @@ services:
         environment:
             ConnectionStrings__ComicShopContext: "Data Source=host.docker.internal,1433;Initial Catalog=ComicShop;User ID=sa;Password=P@ssw0rd"
             ElasticSearch__Uri: "http://host.docker.internal:9200"
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
