@@ -39,5 +39,17 @@ namespace ComicShop.Infra.Data.Features.Publishers
         {
             return await Task.Run(() => _context.Publishers.AnyAsync(p => p.Id == publisherId));
         }
+
+        public async Task<Publisher> GetByIdAsync(Guid publisherId)
+        {
+            return await Task.Run(() => _context.Publishers.SingleOrDefaultAsync(p => p.Id == publisherId));
+        }
+
+        public async Task UpdateAsync(Publisher publisher)
+        {
+            _context.Entry(publisher).State = EntityState.Modified;
+
+            await _context.SaveChangesAsync();
+        }
     }
 }

@@ -13,6 +13,8 @@ namespace ComicShop.WebApi.Controllers.v1.Publishers
 {
     [Route("v1/[controller]")]
     [ApiController]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public class PublishersController : ControllerBase
     {
@@ -28,7 +30,7 @@ namespace ComicShop.WebApi.Controllers.v1.Publishers
         [HttpPost]
         [Authorize(Roles = "Default,Admin")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PostAsync([FromBody] PublisherCreate.Command publisherCreateCommand)
         {
             var response = await _mediator.Send(publisherCreateCommand);
@@ -46,6 +48,20 @@ namespace ComicShop.WebApi.Controllers.v1.Publishers
             var publisherViewModelList = _mapper.Map<IEnumerable<PublisherResumeViewModel>>(response);
 
             return Ok(publisherViewModelList);
+        }
+
+        [HttpPut]
+        [Authorize(Roles = "Default,Admin")]
+        [ProducesResponseType(typeof(PublisherResumeViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> PutPublisherAsync([FromBody] PublisherUpdate.Command publisherUpdateCommand)
+        {
+            var response = await _mediator.Send(publisherUpdateCommand);
+
+            var publisherViewModel = _mapper.Map<PublisherResumeViewModel>(response);
+
+            return Ok(publisherViewModel);
         }
     }
 }

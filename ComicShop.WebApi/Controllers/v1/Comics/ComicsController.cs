@@ -13,6 +13,9 @@ namespace ComicShop.WebApi.Controllers.v1.Comics
 {
     [Route("v1/[controller]")]
     [ApiController]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public class ComicsController : ControllerBase
     {
         private readonly IMediator _mediator;
