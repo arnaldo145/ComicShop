@@ -9,5 +9,15 @@ namespace ComicShop.Domain.Features.Publishers
         public string Country { get; set; }
 
         public ICollection<ComicBook> ComicBooks { get; set; }
+
+        public void SetName(string name)
+        {
+            Name = name;
+        }
+
+        public void SetCountry(string country)
+        {
+            Country = country;
+        }
     }
 }
