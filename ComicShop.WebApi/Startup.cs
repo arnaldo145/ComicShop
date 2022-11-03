@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Text;
+﻿using System.Text;
 using ComicShop.Application;
 using ComicShop.Infra.Data.Contexts;
 using ComicShop.WebApi.Extensions;
@@ -15,7 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Opw.HttpExceptions;
+using Opw.HttpExceptions.AspNetCore;
 
 namespace ComicShop.WebApi
 {
@@ -31,7 +28,23 @@ namespace ComicShop.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers()
+            services.AddControllers(options => {
+                options.Conventions.ConfigureRouteConvention();
+            })
+                 .AddHttpExceptions(options =>
+                 {
+                     // This is the same as the default behavior; only include exception details in a development environment.
+                     options.IncludeExceptionDetails = context => context.RequestServices.GetRequiredService<IWebHostEnvironment>().EnvironmentName == Environments.Development;
+                     // This is a simplified version of the default behavior; only map exceptions for 4xx and 5xx responses.
+                     options.IsExceptionResponse = context => (context.Response.StatusCode >= 400 && context.Response.StatusCode < 600);
+                     // Only log the when it has a status code of 500 or higher, or when it not is a HttpException.
+                     options.ShouldLogException = exception =>
+                     {
+                         if ((exception is HttpExceptionBase httpException && (int)httpException.StatusCode >= 500) || !(exception is HttpExceptionBase))
+                             return true;
+                         return false;
+                     };
+                 })
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AppModule>());
 
             services.AddDbContext<ComicShopCommonDbContext>(options =>
@@ -64,7 +77,6 @@ namespace ComicShop.WebApi
 
             #endregion
 
-
             services.ConfigureSwaggerServices();
         }
 
@@ -76,6 +88,8 @@ namespace ComicShop.WebApi
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseHttpExceptions();
+
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger(c =>
             {
@@ -86,8 +100,6 @@ namespace ComicShop.WebApi
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "ComicShop Web API");
             });
-
-            app.UseErrorHandler();
 
             app.UseHttpsRedirection();
 

@@ -2,12 +2,12 @@
 using System.Threading.Tasks;
 using ComicShop.Application.Features.Users.DTOs;
 using ComicShop.Application.Features.Users.Services;
-using ComicShop.Domain.Exceptions;
 using ComicShop.Domain.Features.Users;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Opw.HttpExceptions;
 
 namespace ComicShop.Application.Features.Users
 {

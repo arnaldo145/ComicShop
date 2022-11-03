@@ -2,13 +2,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using ComicShop.Domain.Exceptions;
 using ComicShop.Domain.Features.Comics;
 using ComicShop.Domain.Features.Publishers;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Opw.HttpExceptions;
 
 namespace ComicShop.Application.Features.Comics
 {
