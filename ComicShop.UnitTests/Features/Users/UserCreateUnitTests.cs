@@ -1,23 +1,21 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using ComicShop.Application.Features.Users;
 using ComicShop.Domain.Features.Users;
 using ComicShop.Tests.Common.TestBuilders.Users;
-using ComicShop.WebApi.Extensions;
+using ComicShop.UnitTests.Base;
 using FluentAssertions;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using NUnit.Framework;
 
 namespace ComicShop.UnitTests.Features.Users
 {
     [TestFixture]
-    public class UserCreateUnitTests
+    public class UserCreateUnitTests : BaseTest
     {
         private Mock<IUserRepository> _userRepository;
-        private IMapper _mapper;
-
         private UserCreate.Handler _handler;
 
         [SetUp]
@@ -25,11 +23,9 @@ namespace ComicShop.UnitTests.Features.Users
         {
             _userRepository = new Mock<IUserRepository>();
 
-            var profile = new MappingProfile();
-            var configuration = new MapperConfiguration(cfg => cfg.AddProfile(profile));
-            _mapper = new Mapper(configuration);
-
-            _handler = new UserCreate.Handler(_userRepository.Object, _mapper);
+            _handler = new UserCreate.Handler(_userRepository.Object,
+                NullLogger<UserCreate.Handler>.Instance,
+                Mapper);
         }
 
         [Test]

@@ -28,6 +28,7 @@ namespace ComicShop.Application.Features.Publishers
                 public Validator()
                 {
                     RuleFor(s => s.Name).NotNull().NotEmpty().MaximumLength(255);
+                    RuleFor(s => s.Country).NotNull().NotEmpty();
                 }
             }
         }
