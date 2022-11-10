@@ -60,11 +60,17 @@ namespace ComicShop.Application.Features.Comics
             {
                 var comicBook = _mapper.Map<ComicBook>(request);
 
-                var hasAnyPublisher = await _publisherRepository.HasAnyByIdAsync(comicBook.PublisherId);
+                var hasAnyPublisherCallback = await _publisherRepository.HasAnyByIdAsync(comicBook.PublisherId);
+
+                if (hasAnyPublisherCallback.IsFailure)
+                {
+                    throw hasAnyPublisherCallback.Failure;
+                }
+
+                var hasAnyPublisher = hasAnyPublisherCallback.Success;
 
                 if (!hasAnyPublisher)
                 {
-
                     var badRequestException = new BadRequestException($"Unable to find publisher with id {comicBook.PublisherId}.");
                     _logger.LogError(badRequestException, "Unable to find publisher with id {comicBookPublisherId}", comicBook.PublisherId);
                     throw badRequestException;
