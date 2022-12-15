@@ -13,10 +13,13 @@ namespace ComicShop.Infra.Data.Features.Comics
             builder.HasKey(c => c.Id);
 
             builder.Property(c => c.Name).IsRequired().HasMaxLength(255);
-            builder.Property(c => c.ReleaseYear).IsRequired().HasMaxLength(4);
             builder.Property(c => c.Price).IsRequired();
+            builder.Property(c => c.Amount).IsRequired();
+            builder.Property(c => c.ReleaseDate).HasColumnType("date").IsRequired();
 
-            builder.HasOne(c => c.Publisher).WithMany(p => p.ComicBooks).HasForeignKey(c => c.PublisherId).IsRequired();
+            builder.HasOne(c => c.Publisher)
+                .WithMany(p => p.ComicBooks)
+                .HasForeignKey(c => c.PublisherId).IsRequired();
         }
     }
 }

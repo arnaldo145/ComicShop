@@ -4,14 +4,16 @@ using ComicShop.Infra.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ComicShop.Infra.Data.Migrations
 {
     [DbContext(typeof(ComicShopCommonDbContext))]
-    partial class ComicShopCommonDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221215015147_AddAmountAndReleaseDateComicBook")]
+    partial class AddAmountAndReleaseDateComicBook
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,6 +43,11 @@ namespace ComicShop.Infra.Data.Migrations
 
                     b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("date");
+
+                    b.Property<string>("ReleaseYear")
+                        .IsRequired()
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
 
                     b.HasKey("Id");
 

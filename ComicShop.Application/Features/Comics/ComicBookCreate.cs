@@ -17,9 +17,10 @@ namespace ComicShop.Application.Features.Comics
         public class Command : IRequest<Guid>
         {
             public string Name { get; set; }
-            public string ReleaseYear { get; set; }
             public double Price { get; set; }
             public Guid PublisherId { get; set; }
+            public int Amount { get; set; }
+            public DateTime ReleaseDate { get; set; }
 
             public ValidationResult Validate()
             {
@@ -31,9 +32,9 @@ namespace ComicShop.Application.Features.Comics
                 public Validator()
                 {
                     RuleFor(s => s.Name).NotNull().NotEmpty().MaximumLength(255);
-                    RuleFor(s => s.ReleaseYear).NotNull().NotEmpty().MaximumLength(4);
                     RuleFor(s => s.Price).GreaterThan(0);
                     RuleFor(s => s.PublisherId).NotNull().NotEmpty();
+                    RuleFor(s => s.Amount).GreaterThan(0);
                 }
             }
         }
@@ -75,7 +76,7 @@ namespace ComicShop.Application.Features.Comics
                 if (hasAnyComicBook)
                 {
                     var badRequestException = new BadRequestException("Already exists comic book with same name and same publisher.");
-                    _logger.LogError(badRequestException, "Already exists comic book with same name ({comicBookName}) and same publisher ({publisherName}).", comicBook.Name, comicBook.Publisher.Name);
+                    _logger.LogError(badRequestException, "Already exists comic book with same name ({comicBookName}) and same publisher ({publisherId}).", comicBook.Name, comicBook.PublisherId);
                     throw badRequestException;
                 }
 
