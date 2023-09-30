@@ -1,16 +1,19 @@
 ﻿using System.Threading.Tasks;
+using AutoMapper;
 using ComicShop.Application.Features.Users;
+using ComicShop.WebApi.Controllers.v1.Base;
+using ComicShop.WebApi.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComicShop.WebApi.Controllers.v1.Users
 {
-    public class UsersController : ControllerBase
+    public class UsersController : ApiControllerBase
     {
         private readonly IMediator _mediator;
 
-        public UsersController(IMediator mediator)
+        public UsersController(IMediator mediator, ExceptionPayloadFactory exceptionPayloadFactory, IMapper mapper) : base(mapper, exceptionPayloadFactory)
         {
             _mediator = mediator;
         }
@@ -22,7 +25,7 @@ namespace ComicShop.WebApi.Controllers.v1.Users
         {
             var response = await _mediator.Send(command);
 
-            return Ok(response);
+            return HandleCommand(response);
         }
 
         [HttpPost]
@@ -32,7 +35,7 @@ namespace ComicShop.WebApi.Controllers.v1.Users
         {
             var response = await _mediator.Send(command);
 
-            return Ok(response.Id);
+            return HandleCommand(response);
         }
     }
 }

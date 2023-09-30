@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using ComicShop.Domain.Features.Publishers;
 using ComicShop.Infra.Data.Contexts;
+using ComicShop.Infra.Structs;
 using Microsoft.EntityFrameworkCore;
 
 namespace ComicShop.Infra.Data.Features.Publishers
@@ -16,40 +17,46 @@ namespace ComicShop.Infra.Data.Features.Publishers
             _context = context;
         }
 
-        public async Task<Guid> AddAsync(Publisher publisher)
+        public Result<Exception, Publisher> Add(Publisher publisher)
         {
             publisher = _context.Publishers.Add(publisher).Entity;
-
-            await _context.SaveChangesAsync();
-
-            return publisher.Id;
+            return publisher;
         }
 
-        public async Task<IEnumerable<Publisher>> GetAllAsync()
+        public async Task<Result<Exception, IEnumerable<Publisher>>> GetAllAsync()
         {
             return await Task.Run(() => _context.Publishers.ToListAsync());
         }
 
-        public async Task<bool> HasAnyAsync(string publisherName)
+        public async Task<Result<Exception, bool>> HasAnyAsync(string publisherName)
         {
-            return await Task.Run(() => _context.Publishers.AnyAsync(p => p.Name.ToLower() == publisherName.ToLower()));
+            return await Result.Run(() => _context.Publishers.AnyAsync(p => p.Name.ToLower() == publisherName.ToLower()));
         }
 
-        public async Task<bool> HasAnyByIdAsync(Guid publisherId)
+        public async Task<Result<Exception, bool>> HasAnyByIdAsync(Guid publisherId)
         {
-            return await Task.Run(() => _context.Publishers.AnyAsync(p => p.Id == publisherId));
+            return await Result.Run(() => _context.Publishers.AnyAsync(p => p.Id == publisherId));
         }
 
-        public async Task<Publisher> GetByIdAsync(Guid publisherId)
+        public async Task<Result<Exception, Publisher>> GetByIdAsync(Guid publisherId)
         {
-            return await Task.Run(() => _context.Publishers.SingleOrDefaultAsync(p => p.Id == publisherId));
+            return await Result.Run(() => _context.Publishers.SingleOrDefaultAsync(p => p.Id == publisherId));
         }
 
-        public async Task UpdateAsync(Publisher publisher)
+        public Result<Exception, Unit> Update(Publisher publisher)
         {
             _context.Entry(publisher).State = EntityState.Modified;
+            return Unit.Successful;
+        }
 
-            await _context.SaveChangesAsync();
+        public async Task<Result<Exception, Unit>> SaveChangesAsync()
+        {
+            var callback = await Result.Run(() => _context.SaveChangesAsync());
+
+            if (callback.IsFailure)
+                return callback.Failure;
+
+            return Unit.Successful;
         }
     }
 }

@@ -1,16 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using ComicShop.Domain.Features.Comics;
+using ComicShop.Infra.Structs;
 using MediatR;
 
 namespace ComicShop.Application.Features.Comics
 {
     public class ComicBookCollection
     {
-        public class Query : IRequest<IEnumerable<ComicBook>> { }
+        public class Query : IRequest<Result<Exception, IEnumerable<ComicBook>>> { }
 
-        public class Handler : IRequestHandler<Query, IEnumerable<ComicBook>>
+        public class Handler : IRequestHandler<Query, Result<Exception, IEnumerable<ComicBook>>>
         {
             private readonly IComicBookRepository _comicBookRepository;
 
@@ -19,9 +21,9 @@ namespace ComicShop.Application.Features.Comics
                 _comicBookRepository = comicBookRepository;
             }
 
-            public async Task<IEnumerable<ComicBook>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<Exception, IEnumerable<ComicBook>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return await _comicBookRepository.GetAllAsNoTrackingAsync();
+                return await _comicBookRepository.GetAllAsync();
             }
         }
     }
