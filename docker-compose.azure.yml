@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+    comic-shop-api:
+        image: arnaldo145/comic_shop_web_api:1.0.0
+        container_name: comic-shop-api
+        restart: "on-failure:5"
+        ports:
+            - "8080:80"
+        environment:
+            ConnectionStrings__ComicShopContext: ""
+            ElasticSearch__Uri: "http://host.docker.internal:9200"  

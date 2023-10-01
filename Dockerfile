@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
 
-ARG COMIC_SHOP_API_PORT=8080
+ARG COMIC_SHOP_API_PORT=80
 EXPOSE ${COMIC_SHOP_API_PORT}
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
