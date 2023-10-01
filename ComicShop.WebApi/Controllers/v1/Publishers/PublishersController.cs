@@ -38,7 +38,7 @@ namespace ComicShop.WebApi.Controllers.v1.Publishers
         {
             var response = await _mediator.Send(publisherCreateCommand);
 
-            return Created(string.Empty, response);
+            return Created(string.Empty, response.Success);
         }
 
         [HttpGet]
