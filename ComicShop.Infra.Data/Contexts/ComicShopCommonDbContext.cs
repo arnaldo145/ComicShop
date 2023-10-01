@@ -22,9 +22,7 @@ namespace ComicShop.Infra.Data.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new PublisherEntityConfiguration());
-            modelBuilder.ApplyConfiguration(new ComicBookEntityConfiguration());
-            modelBuilder.ApplyConfiguration(new UserEntityConfiguration());
+            modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
 
             base.OnModelCreating(modelBuilder);
         }

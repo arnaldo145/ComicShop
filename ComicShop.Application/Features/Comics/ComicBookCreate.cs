@@ -18,9 +18,10 @@ namespace ComicShop.Application.Features.Comics
         public class Command : IRequest<Result<Exception, Guid>>
         {
             public string Name { get; set; }
-            public string ReleaseYear { get; set; }
             public double Price { get; set; }
             public Guid PublisherId { get; set; }
+            public int Amount { get; set; }
+            public DateTime ReleaseDate { get; set; }
 
             public ValidationResult Validate()
             {
@@ -32,9 +33,9 @@ namespace ComicShop.Application.Features.Comics
                 public Validator()
                 {
                     RuleFor(s => s.Name).NotNull().NotEmpty().MaximumLength(255);
-                    RuleFor(s => s.ReleaseYear).NotNull().NotEmpty().MaximumLength(4);
                     RuleFor(s => s.Price).GreaterThan(0);
                     RuleFor(s => s.PublisherId).NotNull().NotEmpty();
+                    RuleFor(s => s.Amount).GreaterThan(0);
                 }
             }
         }
