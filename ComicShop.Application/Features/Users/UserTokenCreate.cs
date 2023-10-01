@@ -1,8 +1,10 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using ComicShop.Application.Features.Users.DTOs;
 using ComicShop.Application.Features.Users.Services;
 using ComicShop.Domain.Features.Users;
+using ComicShop.Infra.Structs;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
@@ -13,7 +15,7 @@ namespace ComicShop.Application.Features.Users
 {
     public class UserTokenCreate
     {
-        public class Command : IRequest<UserTokenDTO>
+        public class Command : IRequest<Result<Exception, UserTokenDTO>>
         {
             public string Email { get; set; }
             public string Password { get; set; }
@@ -33,7 +35,7 @@ namespace ComicShop.Application.Features.Users
             }
         }
 
-        public class Handler : IRequestHandler<Command, UserTokenDTO>
+        public class Handler : IRequestHandler<Command, Result<Exception, UserTokenDTO>>
         {
             private readonly IUserRepository _userRepository;
             private readonly IAuthService _authService;
@@ -48,29 +50,37 @@ namespace ComicShop.Application.Features.Users
                 _logger = logger;
             }
 
-            public async Task<UserTokenDTO> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<Exception, UserTokenDTO>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var user = await _userRepository.GetByEmailAsync(request.Email);
+                var userIdCallback = await _userRepository.GetByEmailAsync(request.Email);
 
-                if (user == null)
+                if (userIdCallback.IsFailure)
+                {
+                    _logger.LogError(userIdCallback.Failure, "An error occurred while trying to get user with email {userEmail}", request.Email);
+                    return userIdCallback.Failure;
+                }
+
+                var user = userIdCallback.Success;
+
+                if (user is null)
                 {
                     var notFoundException = new NotFoundException("User not found");
                     _logger.LogError(notFoundException, "User {userEmail} not found", request.Email);
-                    throw notFoundException;
+                    return notFoundException;
                 }
 
                 if (!user.Password.Equals(request.Password))
                 {
                     var badRequestException = new BadRequestException("Password not match");
                     _logger.LogError(badRequestException, "Password for user {userEmail} not match.", request.Email);
-                    throw badRequestException;
+                    return badRequestException;
                 }
 
                 var tokenGenerated = _authService.GenerateToken(user);
 
                 _logger.LogInformation("Token for user {userEmail} generated successfully.", request.Email);
 
-                return new UserTokenDTO(tokenGenerated, user.Name);
+                return new UserTokenDTO(tokenGenerated.Success, user.Name);
             }
         }
     }

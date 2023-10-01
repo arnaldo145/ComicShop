@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ComicShop.Domain\ComicShop.Domain.csproj" />
+    <ProjectReference Include="..\ComicShop.Infra.Structs\ComicShop.Infra.Structs.csproj" />
     <ProjectReference Include="..\ComicShop.Infra\ComicShop.Infra.csproj" />
   </ItemGroup>
 

@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using ComicShop.Application.Features.Publishers;
+using ComicShop.Domain.Features.Publishers;
+using ComicShop.WebApi.Controllers.v1.Base;
 using ComicShop.WebApi.Controllers.v1.Publishers.ViewModels;
+using ComicShop.WebApi.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -16,12 +19,12 @@ namespace ComicShop.WebApi.Controllers.v1.Publishers
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public class PublishersController : ControllerBase
+    public class PublishersController : ApiControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
-        public PublishersController(IMediator mediator, IMapper mapper)
+        public PublishersController(IMediator mediator, IMapper mapper, ExceptionPayloadFactory exceptionPayloadFactory) : base(mapper, exceptionPayloadFactory)
         {
             _mediator = mediator;
             _mapper = mapper;
@@ -45,9 +48,7 @@ namespace ComicShop.WebApi.Controllers.v1.Publishers
         {
             var response = await _mediator.Send(new PublisherCollection.Query());
 
-            var publisherViewModelList = _mapper.Map<IEnumerable<PublisherResumeViewModel>>(response);
-
-            return Ok(publisherViewModelList);
+            return HandleMappedCommand<IEnumerable<Publisher>, IEnumerable<PublisherResumeViewModel>>(response);
         }
 
         [HttpPut]
@@ -59,9 +60,7 @@ namespace ComicShop.WebApi.Controllers.v1.Publishers
         {
             var response = await _mediator.Send(publisherUpdateCommand);
 
-            var publisherViewModel = _mapper.Map<PublisherResumeViewModel>(response);
-
-            return Ok(publisherViewModel);
+            return HandleMappedCommand<Publisher, PublisherResumeViewModel>(response);
         }
     }
 }

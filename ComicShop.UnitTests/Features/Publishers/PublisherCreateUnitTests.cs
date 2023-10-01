@@ -39,8 +39,8 @@ namespace ComicShop.UnitTests.Features.Publishers
 
             _publisherRepository.Setup(x => x.HasAnyAsync(It.IsAny<string>()))
                 .ReturnsAsync(false);
-            _publisherRepository.Setup(x => x.AddAsync(It.IsAny<Publisher>()))
-                .ReturnsAsync(expectedGuid);
+            _publisherRepository.Setup(x => x.Add(It.IsAny<Publisher>()))
+                .Returns(expectedGuid);
 
             // Act
             var response = await _handler.Handle(command, It.IsAny<CancellationToken>());

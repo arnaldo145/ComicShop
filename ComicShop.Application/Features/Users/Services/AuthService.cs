@@ -3,13 +3,14 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using ComicShop.Domain.Features.Users;
+using ComicShop.Infra.Structs;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ComicShop.Application.Features.Users.Services
 {
     public class AuthService : IAuthService
     {
-        public string GenerateToken(User user)
+        public Result<Exception, string> GenerateToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 

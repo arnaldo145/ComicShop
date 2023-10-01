@@ -35,7 +35,7 @@ namespace ComicShop.WebApi.Controllers.v1.Comics
         {
             var response = await _mediator.Send(comicBookCreateCommand);
 
-            return Created(string.Empty, response);
+            return Created(string.Empty, response.Success);
         }
 
         [HttpGet]
@@ -45,7 +45,7 @@ namespace ComicShop.WebApi.Controllers.v1.Comics
         {
             var response = await _mediator.Send(new ComicBookCollection.Query());
 
-            var comicBookViewModelList = _mapper.Map<IEnumerable<ComicBookResumeViewModel>>(response);
+            var comicBookViewModelList = _mapper.Map<IEnumerable<ComicBookResumeViewModel>>(response.Success);
 
             return Ok(comicBookViewModelList);
         }
