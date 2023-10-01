@@ -1,9 +1,11 @@
-﻿using ComicShop.Domain.Features.Users;
+﻿using System;
+using ComicShop.Domain.Features.Users;
+using ComicShop.Infra.Structs;
 
 namespace ComicShop.Application.Features.Users.Services
 {
     public interface IAuthService
     {
-        string GenerateToken(User user);
+        Result<Exception, string> GenerateToken(User user);
     }
 }

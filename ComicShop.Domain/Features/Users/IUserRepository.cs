@@ -1,13 +1,17 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using ComicShop.Infra.Structs;
 
 namespace ComicShop.Domain.Features.Users
 {
     public interface IUserRepository
     {
-        Task<User> GetByEmailAsync(string email);
+        Task<Result<Exception, User>> GetByEmailAsync(string email);
 
-        User Add(User user);
+        Task<Result<Exception, Guid>> GetIdByEmailAsync(string email);
 
-        Task SaveChangesAsync();
+        Result<Exception, User> Add(User user);
+
+        Task<Result<Exception, Unit>> SaveChangesAsync();
     }
 }

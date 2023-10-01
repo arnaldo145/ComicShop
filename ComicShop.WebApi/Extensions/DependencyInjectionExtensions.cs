@@ -10,6 +10,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using ComicShop.Domain.Features.Comics;
 using ComicShop.Infra.Data.Features.Comics;
+using ComicShop.WebApi.Exceptions;
 
 namespace ComicShop.WebApi.Extensions
 {
@@ -19,6 +20,8 @@ namespace ComicShop.WebApi.Extensions
         {
             AddMediatr(services);
             AddAutoMapper(services);
+
+            AddExceptionHandling(services);
 
             AddPublisherFeature(services);
             AddComicBookFeature(services);
@@ -55,6 +58,11 @@ namespace ComicShop.WebApi.Extensions
         {
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuthService, AuthService>();
+        }
+
+        public static void AddExceptionHandling(this IServiceCollection services)
+        {
+            services.AddScoped<ExceptionPayloadFactory>();
         }
     }
 }
