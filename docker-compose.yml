@@ -21,7 +21,7 @@ services:
         depends_on:
             - mssql
         environment:
-            ConnectionStrings__ComicShopContext: "Data Source=host.docker.internal,1433;Initial Catalog=ComicShop;User ID=sa;Password=P@ssw0rd"
+            ConnectionStrings__ComicShopContext: "Data Source=comicshopdb.czcs6c06wtdx.sa-east-1.rds.amazonaws.com,1433;Initial Catalog=comicshopdb;User ID=sa;Password=wF1nKLNbY5V2W73xPLqW"
             ElasticSearch__Uri: "http://host.docker.internal:9200"
         extra_hosts:
             - "host.docker.internal:host-gateway"
