@@ -17,11 +17,11 @@ services:
             context: ./
             dockerfile: ./Dockerfile
         ports:
-            - "8080:80"
+            - "8080:8080"
         depends_on:
             - mssql
         environment:
-            ConnectionStrings__ComicShopContext: "Data Source=host.docker.internal,1433;Initial Catalog=ComicShop;User ID=sa;Password=P@ssw0rd"
+            ConnectionStrings__ComicShopContext: "Data Source=host.docker.internal,1433;Initial Catalog=ComicShop;User ID=sa;Password=P@ssw0rd;TrustServerCertificate=Yes;"
             ElasticSearch__Uri: "http://host.docker.internal:9200"
         extra_hosts:
             - "host.docker.internal:host-gateway"
