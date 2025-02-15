@@ -44,10 +44,8 @@ namespace ComicShop.WebApi
                                     AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv7,
                                     IndexFormat = "comic-shop-api-{0:yyyy.MM}"
                                 })
-                        .WriteTo.Console()
                         .CreateLogger();
                 })
-                .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
