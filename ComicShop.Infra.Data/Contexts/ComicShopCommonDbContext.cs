@@ -2,9 +2,6 @@
 using ComicShop.Domain.Features.Comics;
 using ComicShop.Domain.Features.Publishers;
 using ComicShop.Domain.Features.Users;
-using ComicShop.Infra.Data.Features.Comics;
-using ComicShop.Infra.Data.Features.Publishers;
-using ComicShop.Infra.Data.Features.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace ComicShop.Infra.Data.Contexts

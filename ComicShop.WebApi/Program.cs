@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using Serilog.Sinks.Elasticsearch;
 using Serilog;
+using Serilog.Sinks.Elasticsearch;
 
 namespace ComicShop.WebApi
 {
@@ -35,6 +35,7 @@ namespace ComicShop.WebApi
                     var settings = config.Build();
                     Log.Logger = new LoggerConfiguration()
                         .Enrich.FromLogContext()
+                        .WriteTo.Console() // Adiciona o sink do console
                         .WriteTo.Elasticsearch(
                             options:
                                 new ElasticsearchSinkOptions(
@@ -49,6 +50,7 @@ namespace ComicShop.WebApi
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+                .UseSerilog(); // Configura o Serilog como provedor de logging global
     }
 }

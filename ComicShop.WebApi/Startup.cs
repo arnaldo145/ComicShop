@@ -45,8 +45,7 @@ namespace ComicShop.WebApi
                              return true;
                          return false;
                      };
-                 })
-                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<AppModule>());
+                 });
 
             services.AddDbContext<ComicShopCommonDbContext>(options =>
                    options.UseSqlServer(Configuration.GetConnectionString("ComicShopContext")));
