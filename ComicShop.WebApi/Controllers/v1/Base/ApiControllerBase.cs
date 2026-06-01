@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using AutoMapper;
 using ComicShop.Infra.Structs;
 using ComicShop.WebApi.Exceptions;
@@ -30,11 +29,8 @@ namespace ComicShop.WebApi.Controllers.v1.Base
         {
             var exceptionPayload = _exceptionPayloadFactory.Create(exceptionToHandle);
 
-            if (exceptionToHandle is NotFoundException)
-                return NotFound(exceptionPayload);
-
-            if (exceptionToHandle is BadRequestException)
-                return StatusCode(StatusCodes.Status400BadRequest, exceptionPayload);
+            if (exceptionToHandle is HttpExceptionBase httpException)
+                return StatusCode((int)httpException.StatusCode, exceptionPayload);
 
             return StatusCode(StatusCodes.Status500InternalServerError, exceptionPayload);
         }

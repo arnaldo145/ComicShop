@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using ComicShop.Domain.Features.Comics;
 using ComicShop.Infra.Data.Features.Comics;
 using ComicShop.WebApi.Exceptions;
+using ComicShop.WebApi.Services;
 
 namespace ComicShop.WebApi.Extensions
 {
@@ -58,6 +59,7 @@ namespace ComicShop.WebApi.Extensions
         {
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IPasswordService, PasswordService>();
         }
 
         public static void AddExceptionHandling(this IServiceCollection services)

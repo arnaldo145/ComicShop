@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ComicShop.Application.Features.Users;
+using ComicShop.Application.Features.Users.Services;
 using ComicShop.Domain.Features.Users;
 using ComicShop.Tests.Common.TestBuilders.Users;
 using ComicShop.UnitTests.Base;
@@ -15,15 +16,21 @@ namespace ComicShop.UnitTests.Features.Users
     [TestFixture]
     public class UserCreateUnitTests : BaseTest
     {
+        private Mock<IPasswordService> _passwordService;
         private Mock<IUserRepository> _userRepository;
         private UserCreate.Handler _handler;
 
         [SetUp]
         public void Initialize()
         {
+            _passwordService = new Mock<IPasswordService>();
             _userRepository = new Mock<IUserRepository>();
 
+            _passwordService.Setup(ps => ps.HashPassword(It.IsAny<User>(), It.IsAny<string>()))
+                .Returns("hashed-password");
+
             _handler = new UserCreate.Handler(_userRepository.Object,
+                _passwordService.Object,
                 NullLogger<UserCreate.Handler>.Instance,
                 Mapper);
         }
@@ -52,8 +59,9 @@ namespace ComicShop.UnitTests.Features.Users
             var response = await _handler.Handle(userCreateCommand, It.IsAny<CancellationToken>());
 
             // Assert
-            response.Should().BeOfType<User>();
-            response.Name.Should().Be("Default");
+            response.IsSuccess.Should().BeTrue();
+            response.Success.Should().BeOfType<User>();
+            response.Success.Name.Should().Be("Default");
 
         }
     }

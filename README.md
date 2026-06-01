@@ -121,6 +121,8 @@ dotnet run --project .\ComicShop.WebApi\ComicShop.WebApi.csproj
 - `http://localhost:5000`
 - Swagger: `https://localhost:5001/swagger`
 
+4. Na primeira execução, configure também `Jwt` e `Bootstrap:Admin` para criar o primeiro usuário administrador de forma segura. O passo a passo está em `docs/local-setup.md`.
+
 ### Build da solução principal
 
 ```bash
@@ -205,6 +207,8 @@ Os endpoints protegidos utilizam autorização por roles, com destaque para:
 
 - `Default`
 - `Admin`
+
+Na primeira execução, o primeiro `Admin` pode ser criado automaticamente via configuração `Bootstrap:Admin`, evitando depender de credenciais padrão fixas.
 
 ## Testes
 
