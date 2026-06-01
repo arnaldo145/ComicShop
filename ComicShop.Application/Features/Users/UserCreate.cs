@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using ComicShop.Application.Features.Users.Services;
 using ComicShop.Domain.Features.Users;
 using ComicShop.Infra.Structs;
 using FluentValidation;
@@ -40,14 +41,17 @@ namespace ComicShop.Application.Features.Users
         public class Handler : IRequestHandler<Command, Result<Exception, User>>
         {
             private readonly IUserRepository _userRepository;
+            private readonly IPasswordService _passwordService;
             private readonly ILogger<Handler> _logger;
             private readonly IMapper _mapper;
 
             public Handler(IUserRepository userRepository,
+                IPasswordService passwordService,
                 ILogger<Handler> logger,
                 IMapper mapper)
             {
                 _userRepository = userRepository;
+                _passwordService = passwordService;
                 _logger = logger;
                 _mapper = mapper;
             }
@@ -55,6 +59,7 @@ namespace ComicShop.Application.Features.Users
             public async Task<Result<Exception, User>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var user = _mapper.Map<User>(request);
+                user.Password = _passwordService.HashPassword(user, request.Password);
 
                 var addCallback = _userRepository.Add(user);
 

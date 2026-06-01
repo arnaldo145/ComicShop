@@ -39,14 +39,17 @@ namespace ComicShop.Application.Features.Users
         {
             private readonly IUserRepository _userRepository;
             private readonly IAuthService _authService;
+            private readonly IPasswordService _passwordService;
             private readonly ILogger<Handler> _logger;
 
             public Handler(IUserRepository userRepository,
                 IAuthService authService,
+                IPasswordService passwordService,
                 ILogger<Handler> logger)
             {
                 _userRepository = userRepository;
                 _authService = authService;
+                _passwordService = passwordService;
                 _logger = logger;
             }
 
@@ -64,16 +67,31 @@ namespace ComicShop.Application.Features.Users
 
                 if (user is null)
                 {
-                    var notFoundException = new NotFoundException("User not found");
-                    _logger.LogError(notFoundException, "User {userEmail} not found", request.Email);
-                    return notFoundException;
+                    var unauthorizedException = new UnauthorizedException("Invalid credentials.");
+                    _logger.LogWarning("Invalid credentials for user {userEmail}", request.Email);
+                    return unauthorizedException;
                 }
 
-                if (!user.Password.Equals(request.Password))
+                var passwordVerification = _passwordService.VerifyPassword(user, user.Password, request.Password);
+
+                if (passwordVerification == PasswordVerificationStatus.Failed)
                 {
-                    var badRequestException = new BadRequestException("Password not match");
-                    _logger.LogError(badRequestException, "Password for user {userEmail} not match.", request.Email);
-                    return badRequestException;
+                    var unauthorizedException = new UnauthorizedException("Invalid credentials.");
+                    _logger.LogWarning("Invalid credentials for user {userEmail}", request.Email);
+                    return unauthorizedException;
+                }
+
+                if (passwordVerification == PasswordVerificationStatus.SuccessRehashNeeded)
+                {
+                    user.Password = _passwordService.HashPassword(user, request.Password);
+
+                    var saveChangesCallback = await _userRepository.SaveChangesAsync();
+
+                    if (saveChangesCallback.IsFailure)
+                    {
+                        _logger.LogError(saveChangesCallback.Failure, "An error occurred while trying to upgrade password hash for user {userEmail}", request.Email);
+                        return saveChangesCallback.Failure;
+                    }
                 }
 
                 var tokenGenerated = _authService.GenerateToken(user);

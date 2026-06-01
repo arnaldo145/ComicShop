@@ -1,7 +1,12 @@
-﻿using System.Text;
+﻿using System;
+using System.Linq;
+using System.Text;
 using ComicShop.Application;
+using ComicShop.Application.Features.Users.Services;
+using ComicShop.Domain.Features.Users;
 using ComicShop.Infra.Data.Contexts;
 using ComicShop.WebApi.Extensions;
+using ComicShop.WebApi.Options;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -10,6 +15,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Opw.HttpExceptions;
 using Opw.HttpExceptions.AspNetCore;
@@ -50,12 +57,20 @@ namespace ComicShop.WebApi
             services.AddDbContext<ComicShopCommonDbContext>(options =>
                    options.UseSqlServer(Configuration.GetConnectionString("ComicShopContext")));
 
+                 services.Configure<BootstrapAdminOptions>(Configuration.GetSection(BootstrapAdminOptions.SectionName));
+
             services.AddDependencies();
 
             #region JWT Config
 
-            //aqui vai nossa key secreta, o recomendado é guarda - la no arquivo de configuração
-            var secretKey = "ZWRpw6fDo28gZW0gY29tcHV0YWRvcmE=";
+            var jwtSection = Configuration.GetSection(JwtOptions.SectionName);
+            services.Configure<JwtOptions>(jwtSection);
+
+            var jwtOptions = jwtSection.Get<JwtOptions>()
+                ?? throw new System.InvalidOperationException($"Missing '{JwtOptions.SectionName}' configuration section.");
+
+            if (string.IsNullOrWhiteSpace(jwtOptions.Secret))
+                throw new System.InvalidOperationException($"'{JwtOptions.SectionName}:Secret' must be configured.");
 
             services.AddAuthentication(x =>
             {
@@ -69,9 +84,13 @@ namespace ComicShop.WebApi
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey)),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Secret)),
+                    ValidateIssuer = !string.IsNullOrWhiteSpace(jwtOptions.Issuer),
+                    ValidIssuer = jwtOptions.Issuer,
+                    ValidateAudience = !string.IsNullOrWhiteSpace(jwtOptions.Audience),
+                    ValidAudience = jwtOptions.Audience,
+                    ValidateLifetime = true,
+                    ClockSkew = System.TimeSpan.FromSeconds(30)
                 };
             });
 
@@ -123,8 +142,61 @@ namespace ComicShop.WebApi
                 .GetRequiredService<IServiceScopeFactory>()
                 .CreateScope())
             {
-                using var context = serviceScope.ServiceProvider.GetService<ComicShopCommonDbContext>();
+                using var context = serviceScope.ServiceProvider.GetRequiredService<ComicShopCommonDbContext>();
                 context.Database.Migrate();
+
+                BootstrapAdmin(serviceScope.ServiceProvider, context);
+            }
+        }
+
+        private static void BootstrapAdmin(IServiceProvider serviceProvider, ComicShopCommonDbContext context)
+        {
+            var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
+            var passwordService = serviceProvider.GetRequiredService<IPasswordService>();
+            var bootstrapOptions = serviceProvider.GetRequiredService<IOptions<BootstrapAdminOptions>>().Value;
+
+            var adminUsers = context.Users.Where(user => user.Type == 2).ToList();
+            var legacySeededAdmin = adminUsers.SingleOrDefault(user => user.Email == "admin@admin.com" && user.Name == "UserAdmin");
+
+            if (!bootstrapOptions.IsConfigured)
+            {
+                if (legacySeededAdmin != null)
+                {
+                    context.Users.Remove(legacySeededAdmin);
+                    context.SaveChanges();
+                    logger.LogWarning("Removed legacy seeded admin because bootstrap admin credentials are not configured.");
+                }
+
+                return;
+            }
+
+            if (adminUsers.Count == 0)
+            {
+                var adminUser = new User
+                {
+                    Name = bootstrapOptions.Name,
+                    Email = bootstrapOptions.Email.Trim(),
+                    Type = 2
+                };
+
+                adminUser.Password = passwordService.HashPassword(adminUser, bootstrapOptions.Password);
+
+                context.Users.Add(adminUser);
+                context.SaveChanges();
+
+                logger.LogInformation("Bootstrap admin user created successfully.");
+                return;
+            }
+
+            if (legacySeededAdmin != null && adminUsers.Count == 1)
+            {
+                legacySeededAdmin.Name = bootstrapOptions.Name;
+                legacySeededAdmin.Email = bootstrapOptions.Email.Trim();
+                legacySeededAdmin.Password = passwordService.HashPassword(legacySeededAdmin, bootstrapOptions.Password);
+
+                context.SaveChanges();
+
+                logger.LogInformation("Legacy seeded admin updated from bootstrap configuration.");
             }
         }
     }

@@ -23,5 +23,12 @@ services:
         environment:
             ConnectionStrings__ComicShopContext: "Data Source=host.docker.internal,1433;Initial Catalog=ComicShop;User ID=sa;Password=P@ssw0rd;TrustServerCertificate=Yes;"
             ElasticSearch__Uri: "http://host.docker.internal:9200"
+            Jwt__Secret: "${JWT_SECRET:?Set JWT_SECRET in .env or the shell before running docker compose.}"
+            Jwt__Issuer: "ComicShop"
+            Jwt__Audience: "ComicShop.Clients"
+            Jwt__ExpirationMinutes: "60"
+            Bootstrap__Admin__Name: "${BOOTSTRAP_ADMIN_NAME:?Set BOOTSTRAP_ADMIN_NAME in .env or the shell before running docker compose.}"
+            Bootstrap__Admin__Email: "${BOOTSTRAP_ADMIN_EMAIL:?Set BOOTSTRAP_ADMIN_EMAIL in .env or the shell before running docker compose.}"
+            Bootstrap__Admin__Password: "${BOOTSTRAP_ADMIN_PASSWORD:?Set BOOTSTRAP_ADMIN_PASSWORD in .env or the shell before running docker compose.}"
         extra_hosts:
             - "host.docker.internal:host-gateway"

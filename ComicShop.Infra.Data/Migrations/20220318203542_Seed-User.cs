@@ -11,7 +11,7 @@ namespace ComicShop.Infra.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql(@"DELETE FROM [dbo].[users]");
+            // No-op: legacy seed disabled.
         }
     }
 }
